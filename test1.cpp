@@ -25,6 +25,7 @@ class user{
 
     string viewmemberBenefit(){
         system("cls");
+        hshaksjdahs
         cout << "Our Frequent Flyer Benefit" << endl;
         cout << "-----------------------------------" << endl;
         cout << "For Blue tier, you will get" << endl;
