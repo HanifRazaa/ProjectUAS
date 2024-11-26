@@ -2,7 +2,7 @@
 #include <string>
 using namespace std;
 
-class user{
+class User{
     public:
     void viewDesti(){
         system("cls");
@@ -12,6 +12,11 @@ class user{
         cout << "Singapore" << endl;
         cout << "Rome, Italy" << endl;
         cout << "Osaka, Japan" << endl;
+
+        char resp;
+        cout << "\n===" << endl;
+        cout << "";
+        cin >> resp;
     }
     void viewFlights(){
         system("cls");
@@ -25,7 +30,6 @@ class user{
 
     string viewmemberBenefit(){
         system("cls");
-        hshaksjdahs
         cout << "Our Frequent Flyer Benefit" << endl;
         cout << "-----------------------------------" << endl;
         cout << "For Blue tier, you will get" << endl;
@@ -46,9 +50,6 @@ class user{
         cout << "Discount on redemption fee" << endl;
         cout << "-----------------------------------" << endl;
         cout << "For Platinum tier, you will get" << endl;
-        cout << "all benefits of Gold, plus :" << endl;
-        cout << "Priority check-in " << endl;
-        cout << "Priority boarding" << endl;
         cout << "all benefits of Gold, plus :" << endl;
         cout << "Free seat selection" << endl;
         cout << "Extra 25 kg baggage allowance" << endl;
@@ -109,22 +110,65 @@ string memberBenefit(){
     return benefit;
     }
 
-class Admin : public user{
+class Admin : public User{
     private:
-    string name;
-    string id;
-    string password;
-    public:
-    void adminLogin(){
-        system("cls");
-        cout << "Enter your ID and password" << endl;
-    }
-    void createFlyer(){
+        string name;
+        string id;
+        string password;
 
-    }
+        bool _validateLogin(string _name, string _password, Admin arrAdmin[10]) {
+            bool isSuccess = false;
+            for (int i = 0; i < 10; i++) {
+                if (_name == arrAdmin[i].name && _password == arrAdmin[i].password) {
+                    isSuccess = true;
+                    break;
+                }
+            }
+            if (isSuccess) {
+                cout << "Login success." << endl;
+                return isSuccess;
+            }
+            cout << "Invalid username or password. Please try again." << endl;
+            return isSuccess;
+        }
+
+    public:
+        Admin(string _name, string _id, string _password){
+            Admin::name = _name;
+            Admin::id = _id;
+            Admin::password = _password;
+        }
+
+        Admin(){}
+
+        void adminLogin(Admin arrAdmin[10]){
+            string _name, _password;
+            system("cls");
+            cout << "LOGIN" << endl;
+            cout << "==========" << endl;
+            cout << "username: ";
+            cin >> _name;
+            cout << "password: ";
+            cin >> _password;
+
+            cout << "==========" << endl;
+            Admin::_validateLogin(_name, _password, arrAdmin);
+            
+            cout << "Press enter to continue...";
+            cin.ignore();
+            cin.get();
+            
+        }
+        void createFlyer(){
+
+        }
 };
 
+
 class Flyer{
+    private:
+    string flyerID;
+    string password;
     public:
     void flyerLogin(){
         system("cls");
@@ -171,43 +215,53 @@ class Flyer{
         cout << "In the next flight, you can : " << benefit << endl;
     }
 };
+
 int main(){
-    user u;
+    User u;
     Admin n;
     Flyer f;
-    int choice;
-    system("cls");
-    cout << "Welcome to Fly-Air" << endl;
-    cout << "1. View Destination" << endl;
-    cout << "2. View Flights" << endl;
-    cout << "3. View Frequent Flyer Benefits" << endl;
-    cout << "4. Frequent Flyer" << endl;
-    cout << "5. Book a Flight" << endl;
-    cout << "6. Admin Login" << endl;
-    cout << "7. Exit" << endl;
-    cout << "Please enter your choice : ";
-    cin >> choice;
-    if (choice == 1){
-        u.viewDesti();
-    }
-    else if (choice == 2){
-        u.viewFlights();
-    }
-    else if (choice == 3){
-        u.viewmemberBenefit();
-    }
-    else if (choice == 4){
-        f.flyerLogin();
-    }
-    else if (choice == 5){
-        f.bookFlight();
-    }
-    else if (choice == 6){
-        n.adminLogin();
-    }
-    else {
+    
+    Admin arrAdmin[10];
+    arrAdmin[0] = Admin("hnfraza", "UID1321", "razaasadmin");
+    arrAdmin[1] = Admin("alxtabita", "UID1322", "sandraasadmin");
+    arrAdmin[2] = Admin("44liyah", "UID1323", "aalasadmin");
+
+    while (true) {
+        int choice;
         system("cls");
-        cout << "Thank you for choosing our airline" << endl;
+        cout << "Welcome to Fly-Air" << endl;
+        cout << "1. View Destination" << endl;
+        cout << "2. View Flights" << endl;
+        cout << "3. View Frequent Flyer Benefits" << endl;
+        cout << "4. Frequent Flyer" << endl;
+        cout << "5. Book a Flight" << endl;
+        cout << "6. Admin Login" << endl;
+        cout << "7. Exit" << endl;
+        cout << "Please enter your choice : ";
+        cin >> choice;
+        if (choice == 1){
+            u.viewDesti();
+        }
+        else if (choice == 2){
+            u.viewFlights();
+        }
+        else if (choice == 3){
+            u.viewmemberBenefit();
+        }
+        else if (choice == 4){
+            f.flyerLogin();
+        }
+        else if (choice == 5){
+            f.bookFlight();
+        }
+        else if (choice == 6){
+            n.adminLogin(arrAdmin);
+        }
+        else {
+            system("cls");
+            cout << "Thank you for choosing our airline" << endl;
+            break;
+        }
     }
-    return choice;
+    return 0;
 };
