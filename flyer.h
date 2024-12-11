@@ -17,7 +17,7 @@ string memberStatus(int flyerpoints){
     else if (flyerpoints<350){
         memberTier = "gold";
     }
-    else if (flyerpoints>=350){
+    else if (flyerpoints>500){
         memberTier = "platinum";
     }
     return memberTier;
@@ -72,7 +72,7 @@ void memberBenefit(string tier){
 }
 
 struct FlyerLoginInfo {
-    std::string ID;
+    std::string NIK;
     std::string password;
 };
 
@@ -269,6 +269,9 @@ class Flyer{
 
         remove("flyers.csv");
         rename("temp.csv", "flyers.csv");
+
+        cout << "Press enter to continue ..." << endl;
+        cin.get();
     }
     
     void viewMemberstatus(){
@@ -318,8 +321,8 @@ MemberValidationResult validateMemberLogin(FlyerLoginInfo *loginInfo)
             }
             buff += line[i];
         }
-        cout << loginInfo->ID << " " << loginInfo->password << endl;
-        if (data[0] == loginInfo->ID && data[2] == loginInfo->password)
+        cout << loginInfo->NIK << " " << loginInfo->password << endl;
+        if (data[0] == loginInfo->NIK && data[2] == loginInfo->password)
         {
             mvr.isValid = true;
             mvr.flyerMember = Flyer(data[0], data[1], stoi(data[4]), data[3]);
