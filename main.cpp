@@ -44,13 +44,14 @@ int main(){
     arrAdmin[0] = Admin("hnfraza", "UID1321", "razaasadmin");
     arrAdmin[1] = Admin("alxtabita", "UID1322", "sandraasadmin");
     arrAdmin[2] = Admin("44liyah", "UID1323", "aalasadmin");
+    arrAdmin[3] = Admin("asd", "UID1323", "asd");
 
     Flyer arrFlyer[10];
 
     while (true) {
         int choice;
         system("cls");
-        cout << "Welcome to Fly-Air" << endl;
+        cout << "Welcome to Horizon Vista" << endl;
         cout << "1. View Destination" << endl;
         cout << "2. View Flights" << endl;
         cout << "3. View Frequent Flyer Benefits" << endl;
@@ -70,7 +71,19 @@ int main(){
             u.viewmemberBenefit();
         }
         else if (choice == 4){
-            f.flyerLogin(arrFlyer);
+            FlyerLoginInfo loginInfo = f.flyerLogin();
+            MemberValidationResult mvr = validateMemberLogin(&loginInfo);
+            if(!mvr.isValid){
+                cout << "Wrong ID or password" << endl;
+                cout << "Press enter to continue ..." << endl;
+                cin.ignore();
+                cin.get();
+                continue;
+            }
+            mvr.flyerMember.viewMemberstatus();
+            cout << "Press enter to continue ..." << endl;
+            cin.ignore();
+            cin.get();
         }
         else if (choice == 5){
             f.bookFlight();
@@ -91,4 +104,3 @@ int main(){
     }
     return 0;
 }
-

@@ -1,5 +1,4 @@
 
-#include <iostream>
 using namespace std;
 
 int flyerPoints(){
@@ -7,34 +6,44 @@ int flyerPoints(){
     return flyerPoints;
 };
 
-string memberStatus(){
+string memberStatus(int flyerpoints){
     string memberTier;
-    int flyerpoints;
     if (flyerpoints<150){
-        memberTier = "Blue"; 
+        memberTier = "blue"; 
     }
     else if (flyerpoints<250){
-        memberTier = "Maroon";
+        memberTier = "maroon";
     }
     else if (flyerpoints<350){
-        memberTier = "Gold";
+        memberTier = "gold";
     }
-    else if (flyerpoints>500){
-        memberTier = "Platinum";
+    else if (flyerpoints>=350){
+        memberTier = "platinum";
     }
     return memberTier;
 }
 
-string memberBenefit(){
+void memberBenefit(string tier){
+    int tierCode;
+    if (tier == "blue") {
+        tierCode = 0;
+    }
+    else if (tier == "maroon") {
+        tierCode = 1;
+    }
+    else if (tier == "gold") {
+        tierCode = 2;
+    }
+    else if (tier == "platinum") {
+        tierCode = 3;
+    }
 
     const int BLUE = 0;
     const int MAROON = 1;
     const int GOLD = 2;
     const int PLATINUM = 3; 
 
-    string benefit;
-    int memberTier;
-    switch (memberTier) {
+    switch (tierCode) {
         case BLUE:
             cout << "Free WiFi on your flights" << endl;
             cout << "Save 15% for your seat selection" << endl;
@@ -60,52 +69,140 @@ string memberBenefit(){
             cout << "No redemption fee" << endl;
             break;
     }
-    return benefit;
 }
+
+struct FlyerLoginInfo {
+    std::string ID;
+    std::string password;
+};
 
 class Flyer{
     private:
     std::string name;
     std::string flyerID;
     std::string password;
-    bool _validateLogin(std::string _name, std::string _password, Flyer arrFlyer[10]){}
+    int points;
+    std::string tier;
+
+    // bool _validateLogin(std::string _name, std::string _password){
+    //     std::string line;
+    //     bool isMemberValid = false;
+    //     std::fstream file("flyers.csv");
+    //     if (!file.is_open())
+    //     {
+    //         std::cerr << "Error to open file" << std::endl;
+    //         return;
+    //     }
+    //     while (getline(file, line))
+    //     {
+    //         std::string data[5];
+    //         std::string buff;
+    //         int dataPos = 0;
+
+    //         for (int i = 0; i < line.length(); i++)
+    //         {
+    //             if (line[i] == ',')
+    //             {
+    //                 data[dataPos] = buff;
+    //                 dataPos++;
+    //                 buff = "";
+    //                 continue;
+    //             }
+    //             buff += line[i];
+    //         }
+    //         if(data[1] == _name && data[2] == _password){
+    //             isMemberValid = true;
+    //         }
+    //     }
+    //     file.close();
+    //     return isMemberValid;
+    // }
     public:
+    Flyer(){}
     Flyer(std::string _name, std::string _flyerID, std::string _password){
         Flyer::name = _name;
         Flyer::flyerID = _flyerID;
         Flyer::password = _password;
     }
-    Flyer(){}
-    void flyerLogin(Flyer arrFlyer[10]){
-        std::string _name, _password;
+
+    Flyer(std::string _name, std::string _flyerID, int _points, std::string _tier)
+    {
+        Flyer::name = _name;
+        Flyer::flyerID = _flyerID;
+        Flyer::points = _points;
+        Flyer::tier = _tier;
+    }
+    FlyerLoginInfo flyerLogin()
+    {
+        std::string _id, _password;
         system("cls");
         cout << "Please enter your flyer ID and password" << endl;
         cout << "----------" << endl;
-            cout << "username: ";
-            cin >> _name;
-            cout << "password: ";
-            cin >> _password;
-
-            cout << "----------" << endl;
-            Flyer::_validateLogin(_name, _password, arrFlyer);
-            
-            cout << "Press enter to continue...";
-            cin.ignore();
-            cin.get();
+        cout << "ID: ";
+        cin >> _id;
+        cout << "password: ";
+        cin >> _password;
+        return {_id, _password};
     }
     void bookFlight(){
         int choice;
-        int points = flyerPoints();
+        string id;
+        std::string line;
+        int currentPoints;
+        bool isMemberFound = false;
+        int points;
         system("cls");
-        cout << "Choose your Destination" << endl;
-        cout << "1. CGK - YIA" << endl;
-        cout << "2. CGK - SIN" << endl;
-        cout << "3. CGK - FCO" << endl;
-        cout << "4. CGK - KIX" << endl;
+        cout << "[1] CGK - YIA" << endl;
+        cout << "[2] CGK - SIN" << endl;
+        cout << "[3] CGK - FCO" << endl;
+        cout << "[4] CGK - KIX" << endl;
+        cout << "=============" << endl;
+        cout << "Choose your Destination [1-4]: ";
         cin >> choice;
+        cin.ignore();
+        cout << "Please enter your id number: ";
+        getline(cin, id);
+        std::ofstream tempOut;
+        std::fstream file("flyers.csv");
+        if (!file.is_open())
+        {
+            std::cerr << "Error to open file" << std::endl;
+            return;
+        }
+        while (getline(file, line))
+        {
+            std::string data[5];
+            std::string buff;
+            int dataPos = 0;
+
+            for (int i = 0; i < line.length(); i++)
+            {
+                if (line[i] == ',')
+                {
+                    data[dataPos] = buff;
+                    dataPos++;
+                    buff = "";
+                    continue;
+                }
+                buff += line[i];
+            }
+
+            if (data[0] == id){
+                isMemberFound = true;
+                points = stoi(data[4]);
+                break;
+            }
+        }
+        if(!isMemberFound){
+            cout << "You are currently not a member, please register" << endl;
+            cout << "Press enter to continue..." << endl;
+            cin.get();
+            return;
+        }
+
         if (choice == 1){
-           cout << "Your flight is booked" << endl;
-           points += 60;
+            cout << "Your flight is booked" << endl;
+            points += 60;
         }
         else if (choice == 2){
             cout << "Your flight is booked" << endl;
@@ -119,18 +216,115 @@ class Flyer{
             cout << "Your flight is booked" << endl;
             points += 150;
         }
-        
+
+        tempOut.open("temp.csv", std::ios::app);
+        std::ifstream file2temp("flyers.csv");
+        if (!file2temp.is_open())
+        {
+            std::cerr << "Error to open file" << std::endl;
+            return;
+        }
+        while (getline(file2temp, line))
+        {
+            std::string data[5];
+            std::string buff;
+            int dataPos = 0;
+
+            for (int i = 0; i < line.length(); i++)
+            {
+                if (line[i] == ',')
+                {
+                    data[dataPos] = buff;
+                    dataPos++;
+                    buff = "";
+                    continue;
+                }
+                buff += line[i];
+            }
+            tempOut << data[0] << ",";
+            tempOut << data[1] << ",";
+            tempOut << data[2] << ",";
+            if (data[0] == id)
+            {
+                string tier = memberStatus(points);
+                tempOut<< tier << ",";
+            }
+            else
+            {
+                tempOut << data[3] << ",";
+            }
+            if (data[0] == id)
+            {
+                tempOut << points << ",";
+            }
+            else
+            {
+                tempOut << data[4] << ",";
+            }
+            tempOut << std::endl;
+        }
+        tempOut.close();
+        file.close();
+        file2temp.close();
+
+        remove("flyers.csv");
+        rename("temp.csv", "flyers.csv");
     }
     
     void viewMemberstatus(){
-        string benefit = memberBenefit();
-        int points = flyerPoints();
-        string tier = memberStatus();
+        
 
         system("cls");
-        cout << "Your Frequent Flyer tier is : " << tier << endl;
+        cout << "Your Frequent Flyer tier is : " << Flyer::tier << endl;
         cout << "-----------------------------------" << endl;
-        cout << "Flyer Points : " << points << endl;
-        cout << "In the next flight, you can : " << benefit << endl;
+        cout << "Flyer Points : " << Flyer::points << endl;
+        cout << "In the next flight, you can: " << endl;
+        memberBenefit(Flyer::tier);
     }
 };
+
+struct MemberValidationResult
+{
+    bool isValid;
+    Flyer flyerMember;
+};
+
+MemberValidationResult validateMemberLogin(FlyerLoginInfo *loginInfo)
+{
+    std::string line;
+    bool isMemberValid = false;
+    std::fstream file("flyers.csv");
+    Flyer flyer = Flyer("", "", 0, "");
+    MemberValidationResult mvr = {isMemberValid, flyer};
+    if (!file.is_open())
+    {
+        std::cerr << "Error to open file" << std::endl;
+        return mvr;
+    }
+    while (getline(file, line))
+    {
+        std::string data[5];
+        std::string buff;
+        int dataPos = 0;
+
+        for (int i = 0; i < line.length(); i++)
+        {
+            if (line[i] == ',')
+            {
+                data[dataPos] = buff;
+                dataPos++;
+                buff = "";
+                continue;
+            }
+            buff += line[i];
+        }
+        cout << loginInfo->ID << " " << loginInfo->password << endl;
+        if (data[0] == loginInfo->ID && data[2] == loginInfo->password)
+        {
+            mvr.isValid = true;
+            mvr.flyerMember = Flyer(data[0], data[1], stoi(data[4]), data[3]);
+        }
+    }
+    file.close();
+    return mvr;
+}
